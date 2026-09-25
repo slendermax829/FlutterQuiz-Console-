@@ -21,13 +21,23 @@ void main() {
     ui.displayMenu();
   });
 
-  test('Question MC', () {
-    Question q = Question("Am I a Multiple Choice?", QuestionType.MC);
+  test("Multiple Choice Question", () {
+    MultipleChoice mc = MultipleChoice("Is this a MC?", ["True","False"], 0);
 
-    print(q.toString());
+    print(mc.toString());
+    
+    expect(mc.type.name, "Multiple Choice", reason: 'enum is not MIB');
+    expect(mc.checkUserInput('1'),true, reason: 'Answer is \"True\"');
+    expect(mc.answer, '1', reason: "Answer is option 1, index = 0");
+  });
 
-    expect(q.type.name, 'Multiple Choice', reason: "This question should be \'Multiple Choice\'");
-    expect(q.type.number, 1, reason: 'Multiple Choice == 1');
-    expect(q.typeRecord, ('Multiple Choice',1), reason: "(String name, int number)");
+  test('Fill in the Blank Question', () {
+    FillInBlank fb = FillInBlank("This is a ______ question", ["Fill in the Blank"]);
+
+    print(fb.toString());
+
+    expect(fb.type.name, "Fill in the Blank", reason: 'enum is not FIB');
+    expect(fb.checkUserInput("fill in the blank"),true, reason: 'The answer is \' Fill in the Blank\'(lowercase counts as well)');
+    expect(fb.answer, '(fill in the blank)', reason: 'the getter should return List<String> -> String');
   });
 }

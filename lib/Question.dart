@@ -17,7 +17,7 @@ enum QuestionType
   }
 }
 
-class Question 
+abstract class Question 
 {
   final String _prompt;
   final QuestionType _type;
@@ -27,11 +27,77 @@ class Question
 
   Record get typeRecord => (type.name,type.number);
 
+  String get answer; // abstract
+
   Question(this._prompt, this._type);
 
   @override
   String toString() {
     return '''$_prompt\n
     ''';
+  }
+
+  
+  bool checkUserInput(String? userInput);
+}
+
+class FillInBlank extends Question
+{
+  final List<String> _answers;
+
+  String get answer => _answers.map((a)=> a.toLowerCase()).toString();
+
+  FillInBlank(String prompt, this._answers)
+  :super(prompt, QuestionType.FIB);
+
+  @override
+  String toString() {
+    return '''Fill in the Blank!\n
+$_prompt\n 
+    ''';
+  }
+
+  bool checkUserInput(String? userInput)
+  {
+    if(userInput == null)
+    {
+      return false;
+    }
+
+    var toBeChecked = _answers.map((a)=> a.toLowerCase()).toList();
+
+    return toBeChecked.contains(userInput);
+  }
+}
+
+class MultipleChoice extends Question
+{
+  final List<String> _options;
+  final int _answerIndex;
+
+  String get answer => (_answerIndex + 1).toString();
+
+  MultipleChoice(String prompt, this._options, this._answerIndex)
+  :super(prompt,QuestionType.MC);
+
+  @override
+  String toString() {
+    var questionChoices = _options.asMap().entries.map((o)=> '${o.key + 1}. ${o.value}').join('\n');
+    return '''Multiple Choice\n
+$_prompt\n
+$questionChoices\n
+    ''';
+  }
+
+  bool checkUserInput(String? userInput)
+  {
+    if(userInput == null)
+    {
+      return false;
+    }
+
+    var parsedInt = int.tryParse(userInput);
+
+    return (parsedInt !- 1) == _answerIndex;
   }
 }
