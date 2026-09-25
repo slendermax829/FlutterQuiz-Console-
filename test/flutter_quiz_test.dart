@@ -1,3 +1,4 @@
+import 'package:flutter_quiz/ConsoleUI.dart';
 import 'package:flutter_quiz/QuizParser.dart' as QuizParser;
 import 'package:flutter_quiz/UI.dart';
 import 'package:test/test.dart';
@@ -13,13 +14,9 @@ void main() {
   });
 
   test("InitUI", () {
-    UI ui = UI();
-  
+    //UI ui = UI();
+    ConsoleUI ui = ConsoleUI();
     print('If you see this then the connection is A-OK');
-
-    ui.bluePrint('Hello Im blue');
-    ui.redPrint('Hello Im red');
-    ui.greenPrint('Hello Im green');
-
+    ui.displayMenu();
   });
 }
