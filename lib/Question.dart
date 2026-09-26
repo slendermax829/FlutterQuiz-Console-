@@ -31,6 +31,28 @@ abstract class Question
 
   Question(this._prompt, this._type);
 
+  factory Question.fromJson(Map<String,dynamic> jsonData)
+  {
+    String prompt = jsonData['stem'];
+
+    switch(jsonData['type'])
+    {
+      case 1:
+        List<String> options = List<String>.from(jsonData['options'] as List<dynamic>);
+        int answer = jsonData['answer'];
+
+        return MultipleChoice(prompt, options, answer);
+
+      case 2:
+        List<String> answer = List<String>.from(jsonData['answer'] as List<dynamic>);
+
+        return FillInBlank(prompt, answer);
+
+      default:
+        throw "Invalid Question";
+    }
+  }
+
   @override
   String toString() {
     return '''$_prompt\n
