@@ -5,10 +5,12 @@ import 'package:flutter_quiz/Quiz.dart';
 import 'package:flutter_quiz/Question.dart';
 
 const String _baseUrl = 'https://www.cs.utep.edu/cheon/cs4381/homework/quiz/';
-const int _totalQuizzes = 99;
+const int _totalQuizzes = 8;
 
 String get url => _baseUrl;
 int get totalQuizzes => _totalQuizzes;
+
+//typedef QuizFetchProgress = void Function(String message);
 
 Future<bool> validateURL() async
 {
@@ -27,7 +29,7 @@ Future<bool> validateURL() async
   }
 }
 
-Future<List<Quiz>> fetchQuizzes() async
+Future<List<Quiz>> fetchQuizzes({Function(String message)? onProgress}) async
 {
   List<Quiz?> lst = [];
 
@@ -40,7 +42,15 @@ Future<List<Quiz>> fetchQuizzes() async
       continue;
     }
 
-    lst.add(await _fetchQuiz(i));
+    var quiz = await _fetchQuiz(i);
+
+    if(quiz == null)
+    {
+      continue;
+    }
+
+    onProgress?.call('Fetched ${quiz.name}');
+    lst.add(quiz);
   }
 
   return lst.nonNulls.toList();

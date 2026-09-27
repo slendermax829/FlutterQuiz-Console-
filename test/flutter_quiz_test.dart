@@ -1,5 +1,6 @@
 import 'package:flutter_quiz/ConsoleUI.dart';
 import 'package:flutter_quiz/Question.dart';
+import 'package:flutter_quiz/QuestionDisplayer.dart';
 import 'package:flutter_quiz/QuestionPool.dart';
 import 'package:flutter_quiz/QuizParser.dart' as QuizParser;
 import 'package:flutter_quiz/Quiz.dart';
@@ -19,7 +20,7 @@ void main() {
     //UI ui = UI();
     ConsoleUI ui = ConsoleUI();
     print('If you see this then the connection is A-OK');
-    ui.displayMenu();
+    ui.init();
   });
 
   test("Multiple Choice Question", () {
@@ -88,6 +89,7 @@ void main() {
 
   test('QuizPool', () async {
     final pool = QuestionPool();
+    print('CONNECTING TO API\n');
     await pool.populatePool();
 
     var num = pool.numberOfQuizzes;
@@ -101,5 +103,16 @@ void main() {
     expect(quizKeys.contains(4), true, reason: 'Quiz 4 should be present in the pool');
     expect(quizKeys.length, 8, reason: 'There are exactly 8 quizzes so far');
     expect(questions?[0].type.name, 'Multiple Choice', reason: 'Quiz 1 Question 1 is MC type' );
+  });
+
+  test('QuestionDisplayer', ()async{
+    final QuestionDisplayer displayer = QuestionDisplayer();
+    final pool = QuestionPool();
+
+    await pool.populatePool();
+
+    displayer.questions = pool.getQuestionsFromQuiz(1);
+
+    expect(displayer.questions.length, 10, reason:"Question 1 contains 10 questions in total");
   });
 }

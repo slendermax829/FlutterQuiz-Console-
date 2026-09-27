@@ -23,10 +23,9 @@ class QuestionPool
 
       if(!_quizzes.isEmpty)
       {
-        print('Quiz Cache Cleared');
-        _quizzes.clear();
+        return;
       }
-      print('Getting Quizzes');
+    
       _quizzes = await QuizParser.fetchQuizzes();
 
     }catch(e){
@@ -75,5 +74,4 @@ class QuestionPool
     }
     return randQuestions;
   }
-
 }

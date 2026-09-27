@@ -1,8 +1,8 @@
 import 'package:flutter_quiz/ConsoleUI.dart';
 import 'package:flutter_quiz/QuizParser.dart' as QuizParser;
 
-void main(List<String> arguments) 
+void main(List<String> arguments) async
 {
-  ConsoleUI menuUi = ConsoleUI();
-  menuUi.displayMenu();
+  var menu = ConsoleUI();
+  await menu.init();
 }
