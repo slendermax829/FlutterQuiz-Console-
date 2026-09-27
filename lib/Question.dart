@@ -88,7 +88,7 @@ $_prompt\n
 
     var toBeChecked = _answers.map((a)=> a.toLowerCase()).toList();
 
-    return toBeChecked.contains(userInput);
+    return toBeChecked.contains(userInput.trim().toLowerCase());
   }
 }
 
@@ -118,8 +118,13 @@ $questionChoices\n
       return false;
     }
 
-    var parsedInt = int.tryParse(userInput);
+    var parsedInt = int.tryParse(userInput.trim());
 
-    return (parsedInt !- 1) == _answerIndex;
+    if(parsedInt == null)
+    {
+      return false;
+    }
+
+    return (parsedInt - 1) == _answerIndex;
   }
 }

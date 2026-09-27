@@ -1,16 +1,15 @@
+import 'dart:io';
+
 import 'package:flutter_quiz/Question.dart';
 import 'package:flutter_quiz/QuizUI.dart';
 
 class QuestionDisplayer with QuizUI
 {
   late List<Question>_questions;
-
-  Question? _currQuestion;
-
+  late Question _currQuestion;
   bool _practiceTest = false;
 
   List<Question> get questions => _questions;
-
   set questions(List<Question>? newList)
   {
     _questions = newList == null ? <Question>[] : List<Question>.from(newList);
@@ -19,36 +18,24 @@ class QuestionDisplayer with QuizUI
   bool get practice => _practiceTest;
   set practice(bool toggle) => _practiceTest = toggle;
 
+  Question get currQuestion => _currQuestion;
+
+  String? get currentAnswer => _currQuestion.answer;
+
   QuestionDisplayer();
 
-  void displayQuestion()
+  void displayQuestion(int questionNum)
   {
-    if(_currQuestion == null)
-    {
-      return;
-    }
+    _currQuestion = _questions[questionNum-1];
 
-    if(_practiceTest)
-    {
-      bluePrintln('*** PRACTICE ***\n');
-    }
-
-    if(_currQuestion!.type.number == 1)
-    {
-      bluePrintln("Multiple Choice, Type in a corresponding number");
-    }else{
-      bluePrintln("Fill in the Blank");
-    }
+    clearScreen();
+    _practiceTest ? bluePrintln(' *** PRACTICE ***\n') : stdout.write("");
 
     bluePrintln(_currQuestion.toString());
   }
-
-  void nextQuestion()
+  
+  bool submitAnswer(String? userInput)
   {
-    try{
-      _currQuestion = _questions.removeAt(0);
-    }catch(e){
-      return;
-    }
+    return _currQuestion.checkUserInput(userInput);
   }
 }

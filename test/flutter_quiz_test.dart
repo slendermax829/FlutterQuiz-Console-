@@ -30,6 +30,7 @@ void main() {
     
     expect(mc.type.name, "Multiple Choice", reason: 'enum is not MIB');
     expect(mc.checkUserInput('1'),true, reason: 'Answer is \"True\"');
+    expect(mc.checkUserInput('dasd'),false, reason: 'Non-numeric input should be rejected without crashing');
     expect(mc.answer, '1', reason: "Answer is option 1, index = 0");
   });
 
