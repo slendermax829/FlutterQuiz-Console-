@@ -1,7 +1,7 @@
 import 'package:flutter_quiz/ConsoleUI.dart';
 import 'package:flutter_quiz/Question.dart';
 import 'package:flutter_quiz/QuestionDisplayer.dart';
-import 'package:flutter_quiz/QuestionPool.dart';
+import 'package:flutter_quiz/QuizPool.dart';
 import 'package:flutter_quiz/QuizParser.dart' as QuizParser;
 import 'package:flutter_quiz/Quiz.dart';
 import 'package:test/test.dart';
@@ -14,13 +14,6 @@ void main() {
       bool response = await QuizParser.validateURL();
 
       expect(response,true, reason: 'Connection Failed');
-  });
-
-  test("InitUI", () {
-    //UI ui = UI();
-    ConsoleUI ui = ConsoleUI();
-    print('If you see this then the connection is A-OK');
-    ui.init();
   });
 
   test("Multiple Choice Question", () {
@@ -89,7 +82,7 @@ void main() {
   });
 
   test('QuizPool', () async {
-    final pool = QuestionPool();
+    final pool = QuizPool();
     print('CONNECTING TO API\n');
     await pool.populatePool();
 
@@ -108,7 +101,7 @@ void main() {
 
   test('QuestionDisplayer', ()async{
     final QuestionDisplayer displayer = QuestionDisplayer();
-    final pool = QuestionPool();
+    final pool = QuizPool();
 
     await pool.populatePool();
 

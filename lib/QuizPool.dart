@@ -5,7 +5,7 @@ import 'package:flutter_quiz/Question.dart';
 import 'package:flutter_quiz/QuizParser.dart' as QuizParser;
 import 'dart:math' as math;
 
-class QuestionPool 
+class QuizPool 
 {
   List<Quiz> _quizzes = [];
 
@@ -15,7 +15,7 @@ class QuestionPool
   int get numberOfQuizzes => _quizzes.length;
   int get numberOfQuestions => _quizzes.fold<int>(0,(sum,quiz) => quiz.numOfQuestions + sum);
 
-  QuestionPool();
+  QuizPool();
 
   Future<void> populatePool() async
   {

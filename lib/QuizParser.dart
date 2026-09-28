@@ -14,19 +14,13 @@ int get totalQuizzes => _totalQuizzes;
 
 Future<bool> validateURL() async
 {
-  try{
-    var url = Uri.parse(_baseUrl);
-    var response = await http.get(url);
+  var url = Uri.parse(_baseUrl);
 
-    if(response.statusCode != 200)
-    {
-      return false;
-    }
-    return true;
+  var response = await Future.delayed(Duration(seconds: 3), (){
+    return http.get(url);
+  });
 
-  }catch(e){
-    return false;
-  }
+  return response.statusCode == 200;
 }
 
 Future<List<Quiz>> fetchQuizzes({Function(String message)? onProgress}) async
