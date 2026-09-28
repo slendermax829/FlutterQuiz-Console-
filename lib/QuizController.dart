@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter_quiz/ConsoleUI.dart';
+import 'package:flutter_quiz/Question.dart';
 import 'package:flutter_quiz/QuestionDisplayer.dart';
 import 'package:flutter_quiz/QuizPool.dart';
 import 'package:flutter_quiz/QuizParser.dart' as QuizParser;
@@ -21,11 +22,13 @@ class QuizController with QuizUI
 
   void start() async
   {
-    await _validateConnection();
-
     this.ui = ConsoleUI();
     this.pool = QuizPool();
     this.qDisplay = QuestionDisplayer();
+
+    await _validateConnection();
+
+    await _fetchQuizzes();
 
     _initializeMenu();
   }
@@ -47,6 +50,19 @@ class QuizController with QuizUI
     await Future.delayed(Duration(seconds: 3));
   }
 
+  Future<void> _fetchQuizzes() async
+  {
+    clearScreen();
+    yellowPrintln('FETCHING QUIZZES...');
+
+    await pool.populatePool();
+
+    greenPrintln('\nLOADED ${pool.numberOfQuizzes} QUIZZES');
+    greenPrintln('ACCQUIRED ${pool.numberOfQuestions} QUESTIONS');
+
+    await Future.delayed(Duration(seconds: 3));
+  }
+
   void _initializeMenu()
   {
     var isRunning = true;
@@ -58,7 +74,8 @@ class QuizController with QuizUI
       switch(input)
       {
         case 1:
-          print('Selecting Quiz');
+          //print('Selecting Quiz');
+          _selectQuiz();
           isRunning = false;
 
         case 2:
@@ -79,14 +96,57 @@ class QuizController with QuizUI
     }
   }
 
-  void _selectQuiz()
+  void _selectQuiz() async
   {
     var isRunning = true;
-    var validQuizzes;
+    var input = ui.promptSelectQuiz(pool.quizzes);
+    var quiz = pool.quizzes.firstWhere((q)=> q.quizNum == input);
+
+    qDisplay.questions = List.from(quiz.questions)..shuffle(); // random order of questions
+    _quizLoop();
+    //greenPrintln('Selected ${quiz.name}');
+  }
+
+  void _quizLoop()
+  {
+    var isRunning = true;
+    var score = 0;
+    var questionNum = 1;
+    var numOfQuestions = qDisplay.questions.length;
+
+    List<(String,Question)> correctQuestions = [];
+    List<(String,Question)> incorrectQuestions = [];
 
     while(isRunning)
     {
-      var input = ui.promptMenu();
+      isPractice == true ? qDisplay.displayPracticeQuestion(questionNum):
+      qDisplay.displayQuestion(questionNum);
+
+      var input = stdin.readLineSync();
+
+      if(input == null)
+      {
+        continue;
+      }
+
+      bool isCorrect = qDisplay.submitAnswer(input);
+
+      switch(isCorrect)
+      {
+        case true:
+          score++;
+          correctQuestions.add((input,qDisplay.currQuestion));
+
+        case false:
+          incorrectQuestions.add((input,qDisplay.currQuestion));
+      }
+
+      if(questionNum == numOfQuestions)
+      {
+        isRunning = false;
+      }else{
+        questionNum++;
+      }
     }
   }
 }

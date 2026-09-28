@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
@@ -5,7 +6,7 @@ import 'package:flutter_quiz/Quiz.dart';
 import 'package:flutter_quiz/Question.dart';
 
 const String _baseUrl = 'https://www.cs.utep.edu/cheon/cs4381/homework/quiz/';
-const int _totalQuizzes = 8;
+const int _totalQuizzes = 3;
 
 String get url => _baseUrl;
 int get totalQuizzes => _totalQuizzes;
@@ -23,7 +24,7 @@ Future<bool> validateURL() async
   return response.statusCode == 200;
 }
 
-Future<List<Quiz>> fetchQuizzes({Function(String message)? onProgress}) async
+Future<List<Quiz>> fetchQuizzes() async
 {
   List<Quiz?> lst = [];
 
@@ -43,7 +44,6 @@ Future<List<Quiz>> fetchQuizzes({Function(String message)? onProgress}) async
       continue;
     }
 
-    onProgress?.call('Fetched ${quiz.name}');
     lst.add(quiz);
   }
 

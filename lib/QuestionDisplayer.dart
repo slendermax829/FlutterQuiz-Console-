@@ -1,12 +1,14 @@
 import 'dart:io';
 
 import 'package:flutter_quiz/Question.dart';
+import 'package:flutter_quiz/QuizController.dart';
 import 'package:flutter_quiz/QuizUI.dart';
 
 class QuestionDisplayer with QuizUI
 {
   late List<Question>_questions;
   late Question _currQuestion;
+
   bool _practiceTest = false;
 
   List<Question> get questions => _questions;
@@ -29,13 +31,63 @@ class QuestionDisplayer with QuizUI
     _currQuestion = _questions[questionNum-1];
 
     clearScreen();
-    _practiceTest ? bluePrintln(' *** PRACTICE ***\n') : stdout.write("");
 
     bluePrintln(_currQuestion.toString());
+  }
+
+  void displayPracticeQuestion(int questionNum)
+  {
+    _currQuestion = _questions[questionNum-1];
+
+    clearScreen();
+
+    yellowPrintln('*** PRACTICE ***\n');
+
+    bluePrintln(_currQuestion.toString());
+  }
+
+  void _displayAnswer(String? userInput, bool isCorrect)
+  {
+    var isRunning = true;
+
+    while(isRunning)
+    {
+      clearScreen();
+      isCorrect == true ? greenPrintln('CORRECT!\n') : redPrintln('INCORRECT!\n');
+
+      isCorrect == true ? greenPrintln(_currQuestion.toString()) : redPrintln(_currQuestion.toString());
+
+      if(isCorrect)
+      {
+        greenPrintln(_currQuestion.answer);
+      }else{
+        greenPrintln(_currQuestion.answer);
+        redPrintln('YOUR ANSWER: ${userInput}');
+      }
+
+      bluePrintln('\n Hit \'Enter\' to Continue.');
+
+      var input = stdin.readLineSync();
+
+      if(input == null || input != '')
+      {
+        continue;
+      }
+
+      isRunning = false;
+    }
+
   }
   
   bool submitAnswer(String? userInput)
   {
-    return _currQuestion.checkUserInput(userInput);
+    var correct = _currQuestion.checkUserInput(userInput);
+
+    if(QuizController.isPractice)
+    {
+      _displayAnswer(userInput, correct);
+    }
+
+    return correct;
   }
 }

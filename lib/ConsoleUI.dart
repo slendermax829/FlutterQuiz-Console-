@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter_quiz/Question.dart';
 import 'package:flutter_quiz/QuestionDisplayer.dart';
+import 'package:flutter_quiz/Quiz.dart';
 import 'package:flutter_quiz/QuizController.dart';
 import 'package:flutter_quiz/QuizPool.dart';
 import 'package:flutter_quiz/QuizUI.dart';
@@ -53,6 +54,37 @@ class ConsoleUI with QuizUI
 
         return parsedInput;
       }
+  }
+
+  int promptSelectQuiz(List<Quiz> quizzes)
+  {
+    while(true)
+    {
+      clearScreen();
+      bluePrintln('Please Select a Quiz to Take\n');
+
+      for(Quiz q in quizzes)
+      {
+        bluePrintln('[*] ${q.name}');
+      }
+
+      bluePrintln('\nSelect a Quiz by typing its corresponding number\n');
+
+      var input = stdin.readLineSync();
+
+      if(input == null)
+      {
+        continue;
+      }
+
+      var parsedInput = int.tryParse(input);
+      var quizNumbers = quizzes.map((q)=> q.quizNum).toList();
+
+      if(parsedInput!=null && quizNumbers.contains(parsedInput))
+      {
+        return parsedInput;
+      }
+    }
   }
 
   // void _selectQuiz() async
