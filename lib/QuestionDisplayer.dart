@@ -31,7 +31,7 @@ class QuestionDisplayer with QuizUI
     _currQuestion = _questions[questionNum-1];
 
     clearScreen();
-
+    stdout.write('[$questionNum] ');
     bluePrintln(_currQuestion.toString());
   }
 
@@ -42,7 +42,7 @@ class QuestionDisplayer with QuizUI
     clearScreen();
 
     yellowPrintln('*** PRACTICE ***\n');
-
+    stdout.write('[$questionNum] ');
     bluePrintln(_currQuestion.toString());
   }
 

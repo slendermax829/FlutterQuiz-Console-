@@ -72,8 +72,7 @@ class QuizController with QuizUI
           _selectQuiz();
           return;
         case 2:
-          print('Selecting rand Quiz');
-          return;
+          _selectRandomQuiz();
         case 3:
           continue;
         case 4:
@@ -84,7 +83,7 @@ class QuizController with QuizUI
     }
   }
 
-  void _selectQuiz() async
+  void _selectQuiz()
   {
     var input = ui.promptSelectQuiz(pool.quizzes);
     var quiz = pool.quizzes.firstWhere((q)=> q.quizNum == input);
@@ -92,6 +91,16 @@ class QuizController with QuizUI
     qDisplay.questions = List.from(quiz.questions)..shuffle(); // random order of questions
     _quizLoop();
     //greenPrintln('Selected ${quiz.name}');
+  }
+
+  void _selectRandomQuiz()
+  {
+    var input = ui.promptRandomQuiz(pool.numberOfQuestions);
+    var questions = pool.getRandomQuestions(range: input);
+    
+    qDisplay.questions = questions;
+
+    _quizLoop();
   }
 
   void _quizLoop()

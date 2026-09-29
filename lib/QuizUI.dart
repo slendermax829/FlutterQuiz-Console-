@@ -13,6 +13,12 @@ mixin QuizUI
   final _bluePen = AnsiPen()..blue();
   final _yellowPen = AnsiPen()..yellow();
 
+  String? userInput()
+  {
+    stdout.write('>> ');
+    return stdin.readLineSync()?.trim().toLowerCase();
+  }
+
   void clearScreen()
   {
     _console.clearScreen();

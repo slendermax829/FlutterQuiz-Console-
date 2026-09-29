@@ -52,13 +52,20 @@ class QuizPool
 
     List<Question> randQuestions = [];
 
+    if (_quizzes.isEmpty || range <= 0)
+    {
+      return randQuestions;
+    }
+
+    var targetCount = math.min(range, numberOfQuestions); // to avoid length exception
+
     while(true)
     {
-      var quizNum = quizNumbers[rand.nextInt(numberOfQuizzes)-1];
+      var quizNum = quizNumbers[rand.nextInt(numberOfQuizzes)];
       var selectedQuiz = _quizzes.firstWhere((q) => q.quizNum == quizNum);
 
       var questionNum = rand.nextInt(selectedQuiz.numOfQuestions);
-      var selectedQuestion = selectedQuiz.questions[questionNum-1];
+      var selectedQuestion = selectedQuiz.questions[questionNum];
 
       if(!routlette.contains((quizNum,questionNum)))
       {
@@ -66,7 +73,7 @@ class QuizPool
         randQuestions.add(selectedQuestion);
       }
 
-      if(randQuestions.length == range)
+      if(randQuestions.length == targetCount)
       {
         break;
       }

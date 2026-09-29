@@ -17,7 +17,7 @@ class ConsoleUI with QuizUI
       while(true)
       {
         clearScreen();
-        customPrintln(s: 'Welcome to Flutter-Quiz',r: 79,g: 18,b: 209);
+        customPrintln(s: 'Welcome to Flutter-Quiz',r: 254,g: 40,b: 255);
         bluePrintln('Make a selection by typing a number.\n');
 
         bluePrintln('1. Take a Quiz');
@@ -78,6 +78,33 @@ class ConsoleUI with QuizUI
       if(parsedInput!=null && quizNumbers.contains(parsedInput))
       {
         return parsedInput;
+      }
+    }
+  }
+
+  int promptRandomQuiz(int availableQuestions)
+  {
+    var maxRange = (availableQuestions/3).round();
+    while(true)
+    {
+      clearScreen();
+      bluePrintln('Please Select a Range of Questions to take.\n');
+      bluePrintln('Avaiable Questions: $availableQuestions');
+      bluePrintln('Max Range: $maxRange\n');
+      yellowPrintln('\nDefault is 10\n');
+
+      var input = stdin.readLineSync();
+
+      if(input == null)
+      {
+        continue;
+      }
+
+      var parsedInt = int.tryParse(input);
+
+      if(parsedInt != null && parsedInt > 0 && parsedInt <= maxRange)
+      {
+        return parsedInt;
       }
     }
   }
