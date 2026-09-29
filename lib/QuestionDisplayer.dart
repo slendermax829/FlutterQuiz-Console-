@@ -59,13 +59,13 @@ class QuestionDisplayer with QuizUI
 
       if(isCorrect)
       {
-        greenPrintln(_currQuestion.answer);
+        greenPrintln('CORRECT ANSWER: ${_currQuestion.answer}');
       }else{
-        greenPrintln(_currQuestion.answer);
-        redPrintln('YOUR ANSWER: ${userInput}');
+        greenPrintln('CORRECT ANSWER: ${_currQuestion.answer}');
+        redPrintln('YOUR ANSWER: $userInput');
       }
 
-      bluePrintln('\n Hit \'Enter\' to Continue.');
+      bluePrintln('\nHit \'Enter\' to Continue.');
 
       var input = stdin.readLineSync();
 

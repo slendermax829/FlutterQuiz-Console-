@@ -65,31 +65,24 @@ class QuizController with QuizUI
 
   void _initializeMenu()
   {
-    var isRunning = true;
-
-    while (isRunning)
+    while (true)
     {
       var input = ui.promptMenu();
 
       switch(input)
       {
         case 1:
-          //print('Selecting Quiz');
           _selectQuiz();
-          isRunning = false;
-
+          return;
         case 2:
           print('Selecting rand Quiz');
-          isRunning = false;
-
+          return;
         case 3:
           continue;
-
         case 4:
           clearScreen();
           print('Bye Bye');
-          isRunning = false;
-
+          return;
         default:
           continue;
       }
@@ -122,11 +115,20 @@ class QuizController with QuizUI
       isPractice == true ? qDisplay.displayPracticeQuestion(questionNum):
       qDisplay.displayQuestion(questionNum);
 
-      var input = stdin.readLineSync();
+      var input;
+
+      switch(qDisplay.currQuestion.type.number)
+      {
+        case 1:
+          input = _promptForMC();
+
+        case 2:
+          input = _promptForFIB();
+      }
 
       if(input == null)
       {
-        continue;
+        continue; // loopback
       }
 
       bool isCorrect = qDisplay.submitAnswer(input);
@@ -148,5 +150,34 @@ class QuizController with QuizUI
         questionNum++;
       }
     }
+  }
+
+  String? _promptForMC()
+  {
+
+    var input = stdin.readLineSync()?.trim().toLowerCase();
+    var optionLength = qDisplay.currQuestion.options.length;
+    
+    if(input == null)
+    {
+      return null;
+    }
+
+    var checkInput = int.tryParse(input);
+
+    if(checkInput != null && checkInput >= 1 && checkInput <= optionLength)
+    {
+      return input;
+    }else{
+      return null;
+    }
+  }
+
+  String? _promptForFIB()
+  {
+    var input = stdin.readLineSync()?.trim().toLowerCase();
+
+    return input;
+
   }
 }
