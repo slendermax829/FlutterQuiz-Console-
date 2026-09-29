@@ -1,14 +1,9 @@
-import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter_quiz/Question.dart';
-import 'package:flutter_quiz/QuestionDisplayer.dart';
 import 'package:flutter_quiz/Quiz.dart';
 import 'package:flutter_quiz/QuizController.dart';
-import 'package:flutter_quiz/QuizPool.dart';
 import 'package:flutter_quiz/QuizUI.dart';
-import 'package:flutter_quiz/QuizParser.dart' as QuizParser;
-
 class ConsoleUI with QuizUI
 {
   
@@ -87,136 +82,63 @@ class ConsoleUI with QuizUI
     }
   }
 
-  // void _selectQuiz() async
-  // {
-  //   //pool = QuestionPool()..populatePool();
+  int displayResults(int finalScore, List<(bool,String,Question)> qR)
+  {
+    var selections = <int>[1,2];
+    var total = qR.length;
+    
+    var totalCorrect = qR.where((record) => record.$1 == true).length;
+    var totalIncorrect = qR.where((record) => record.$1 == false).length;
 
-  //   while(true)
-  //   {
-  //     clearScreen();
+    while(true){
+      clearScreen();
+      bluePrintln('RESULTS\n');
+      bluePrintln('Number of Questions: $total');
+      bluePrint('CORRECT: '); greenPrintln('$totalCorrect');
+      bluePrint('INCORRECT: '); redPrintln('$totalIncorrect');
+      finalScore >= 70 ? greenPrintln('FINAL SCORE: $finalScore\n') : redPrintln('FINAL SCORE: $finalScore\n');
 
-  //     bluePrintln('Please Select a Quiz to Take');
-  //     bluePrintln('Select a Quiz by typing its corresponding number\n');
+      if(QuizController.isPractice)
+      {
+        yellowPrintln('SUMMARY\n');
+        for(int i = 0; i < qR.length; i++)
+        {
+          var isCorrect  = qR[i].$1;
+          yellowPrint('${i+1}. ');
+          isCorrect == true ? 
+            greenPrintln('USER ANSWER: ${qR[i].$2}, ANSWER: ${qR[i].$3.answer}') 
+          : redPrintln('USER ANSWER: ${qR[i].$2}, ANSWER: ${qR[i].$3.answer}');
+        }
+      }
 
-  //     for(int num in pool.quizNumbers)
-  //     {
-  //       bluePrintln('* Quiz [$num]');
-  //     }
+      bluePrintln('\nPlease make a selection by typing in a number');
+      bluePrintln('1. Take a new quiz');
+      bluePrintln('2. Quit\n');
 
-  //     var input = stdin.readLineSync();
+      var input = stdin.readLineSync();
 
-  //     if(input == null)
-  //     {
-  //       continue; // loopback
-  //     }
+      if(input == null)
+      {
+        continue; // loopback
+      }
 
-  //     if(input == 'back')
-  //     {
-  //       return;
-  //     }
-      
-  //     var parsedInput = int.tryParse(input);
+      int parsedInput = int.tryParse(input) ?? 0;
 
-  //     if(parsedInput != null && pool.quizNumbers.contains(parsedInput))
-  //     {
-  //       displayer.questions = pool.getQuestionsFromQuiz(parsedInput);
-  //       _quizLoop();
-  //       return;
-  //     }
-  //   }
-  // }
+      if(!selections.contains(parsedInput))
+      {
+        continue;
+      }
 
-  // void _quizLoop()
-  // {
-  //   var score = 0;
-  //   var questionNum = 1;
-  //   var numOfQuestions = displayer.questions.length;
+      return parsedInput;
+    }
+  }
 
-  //   List<Question> correctQuestions = [];
-  //   List<Question> incorrectQuestions = [];
-
-  //   while(questionNum <= numOfQuestions)
-  //   {
-  //     displayer.displayQuestion(questionNum);
-
-  //     var input = stdin.readLineSync();
-
-  //     if(input == null)
-  //     {
-  //       continue;
-  //     }
-
-  //     if(displayer.currQuestion.type.number == 1 && int.tryParse(input) == null)
-  //     {
-  //       continue;
-  //     }
-
-  //     bool isCorrect = displayer.submitAnswer(input);
-
-  //     switch(isCorrect)
-  //     {
-  //       case true:
-  //         correctQuestions.add(displayer.currQuestion);
-  //       case false:
-  //         incorrectQuestions.add(displayer.currQuestion);
-  //     }
-
-  //     score = isCorrect ? score + 1 : score;
-  //     questionNum++;
-  //   }
-
-  //   var finalScore = ((score/numOfQuestions)*100).round();
-
-  //   _displayResults(finalScore, correctQuestions, incorrectQuestions);
-  // }
-
-  // void _displayResults(int finalScore, List<Question> correct, List<Question> incorrect)
-  // {
-  //     while(true){
-  //       clearScreen();
-  //       bluePrintln('RESULTS\n');
-  //       bluePrintln('Number of Questions: ${correct.length + incorrect.length}');
-  //       bluePrint('Correct: '); greenPrintln('${correct.length}');
-  //       bluePrint('Incorrect: '); redPrintln('${incorrect.length}');
-  //       finalScore >= 70 ? greenPrintln('FINAL SCORE: $finalScore\n') : redPrintln('FINAL SCORE: $finalScore\n');
-
-  //       bluePrintln('Please make a selection by typing in a number');
-  //       bluePrintln('1. Retake new quiz');
-  //       bluePrintln('2. Quit\n');
-
-  //       var input = stdin.readLineSync();
-
-  //       if(input == null)
-  //       {
-  //         continue;
-  //       }
-
-  //       var parsedInput = int.tryParse(input);
-
-  //       if(parsedInput == 1){
-  //         _displayMenu();
-  //         break;
-  //       }else if(parsedInput == 2){
-  //         _quit();
-  //         break;
-  //       }
-  //   }
-  // }
-
-  // void _selectRandomQuiz()
-  // {
-  //   clearScreen();
-  //   yellowPrint('Work in Progress be a Patient Pickle LOL');
-  //   sleep(Duration(seconds: 3));
-  // }
-
-  // void _quit()
-  // {
-  //   clearScreen();
-  //   bluePrint('Have a Nice Day ;^)');
-  //   sleep(Duration(seconds: 3));
-  //   clearScreen();
-  //   exit(0); // ensure program terminates correctly
-  // }
+  void quitDisplay()
+  {
+    clearScreen();
+    bluePrint('Have a Nice Day ;^)');
+    sleep(Duration(seconds: 3));
+    clearScreen();
+  }
 
 }

@@ -9,9 +9,6 @@ import 'package:flutter_quiz/QuizUI.dart';
 
 class QuizController with QuizUI
 {
-  static const String _BACK = '/b';
-  static const String _QUIT = '/q';
-
   static bool isPractice = false;
 
   late final ConsoleUI ui;
@@ -80,9 +77,7 @@ class QuizController with QuizUI
         case 3:
           continue;
         case 4:
-          clearScreen();
-          print('Bye Bye');
-          return;
+          _quit();
         default:
           continue;
       }
@@ -91,7 +86,6 @@ class QuizController with QuizUI
 
   void _selectQuiz() async
   {
-    var isRunning = true;
     var input = ui.promptSelectQuiz(pool.quizzes);
     var quiz = pool.quizzes.firstWhere((q)=> q.quizNum == input);
 
@@ -107,8 +101,10 @@ class QuizController with QuizUI
     var questionNum = 1;
     var numOfQuestions = qDisplay.questions.length;
 
-    List<(String,Question)> correctQuestions = [];
-    List<(String,Question)> incorrectQuestions = [];
+    // List<(String,Question)> correctQuestions = [];
+    // List<(String,Question)> incorrectQuestions = [];
+
+    List<(bool,String,Question)> questionRecord = [];
 
     while(isRunning)
     {
@@ -137,20 +133,40 @@ class QuizController with QuizUI
       {
         case true:
           score++;
-          correctQuestions.add((input,qDisplay.currQuestion));
+          questionRecord.add((true,input,qDisplay.currQuestion));
 
         case false:
-          incorrectQuestions.add((input,qDisplay.currQuestion));
+          questionRecord.add((false,input,qDisplay.currQuestion));
       }
 
       if(questionNum == numOfQuestions)
       {
         isRunning = false;
+
       }else{
         questionNum++;
       }
     }
+    
+    _results(score,questionRecord);
   }
+
+  void _results(int score, List<(bool,String,Question)> qR)
+  {
+    var finalScore = ((score/qDisplay.questions.length)*100).round();
+    var input = ui.displayResults(finalScore, qR);
+
+    switch(input)
+    {
+      case 1:
+        _initializeMenu();
+        return;
+      case 2:
+        _quit();
+        return;
+    }
+  }
+
 
   String? _promptForMC()
   {
@@ -179,5 +195,11 @@ class QuizController with QuizUI
 
     return input;
 
+  }
+
+  void _quit()
+  {
+    ui.quitDisplay();
+    exit(0); // ensure program terminates correctly
   }
 }
