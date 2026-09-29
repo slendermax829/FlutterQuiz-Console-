@@ -6,6 +6,8 @@ import 'package:flutter_quiz/ConsoleUI.dart';
 
 mixin QuizUI
 {
+  final String CHECKMARK = '\u2713';
+  
   final _console = Console();
 
   final _redPen = AnsiPen()..red();

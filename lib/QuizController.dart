@@ -105,6 +105,9 @@ class QuizController with QuizUI
 
   void _quizLoop()
   {
+    var BACK = '/b';
+    var NEXT = '/n';
+
     var isRunning = true;
     var score = 0;
     var questionNum = 1;

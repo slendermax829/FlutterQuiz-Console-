@@ -27,7 +27,8 @@ class ConsoleUI with QuizUI
 
         setPractice ? greenPrintln('\nPRACTICE ENABLED') : stdout.writeln('\n'"");
 
-        String? input = stdin.readLineSync();
+        //String? input = stdin.readLineSync();
+        var input = userInput();
 
         if(input == null)
         {
@@ -65,7 +66,7 @@ class ConsoleUI with QuizUI
 
       bluePrintln('\nSelect a Quiz by typing its corresponding number\n');
 
-      var input = stdin.readLineSync();
+      var input = userInput();
 
       if(input == null)
       {
@@ -93,7 +94,7 @@ class ConsoleUI with QuizUI
       bluePrintln('Max Range: $maxRange\n');
       yellowPrintln('\nDefault is 10\n');
 
-      var input = stdin.readLineSync();
+      var input = userInput();
 
       if(input == null)
       {
@@ -125,16 +126,26 @@ class ConsoleUI with QuizUI
       bluePrint('INCORRECT: '); redPrintln('$totalIncorrect');
       finalScore >= 70 ? greenPrintln('FINAL SCORE: $finalScore\n') : redPrintln('FINAL SCORE: $finalScore\n');
 
+      yellowPrintln('SUMMARY\n');
+
       if(QuizController.isPractice)
       {
-        yellowPrintln('SUMMARY\n');
         for(int i = 0; i < qR.length; i++)
         {
           var isCorrect  = qR[i].$1;
           yellowPrint('${i+1}. ');
           isCorrect == true ? 
-            greenPrintln('USER ANSWER: ${qR[i].$2}, ANSWER: ${qR[i].$3.answer}') 
-          : redPrintln('USER ANSWER: ${qR[i].$2}, ANSWER: ${qR[i].$3.answer}');
+            greenPrintln('[$CHECKMARK] USER ANSWER: ${qR[i].$2}, ANSWER: ${qR[i].$3.answer}') 
+          : redPrintln('[X] USER ANSWER: ${qR[i].$2}, ANSWER: ${qR[i].$3.answer}');
+        }
+      }else{
+        for(int i = 0; i < qR.length; i++)
+        {
+          var isCorrect  = qR[i].$1;
+          yellowPrint('${i+1}. ');
+          isCorrect == true ? 
+            greenPrintln('[$CHECKMARK] USER ANSWER: ${qR[i].$2}') 
+          : redPrintln('[X] USER ANSWER: ${qR[i].$2}');
         }
       }
 
@@ -142,7 +153,7 @@ class ConsoleUI with QuizUI
       bluePrintln('1. Take a new quiz');
       bluePrintln('2. Quit\n');
 
-      var input = stdin.readLineSync();
+      var input = userInput();
 
       if(input == null)
       {
