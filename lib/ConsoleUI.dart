@@ -4,63 +4,65 @@ import 'package:flutter_quiz/Question.dart';
 import 'package:flutter_quiz/Quiz.dart';
 import 'package:flutter_quiz/QuizController.dart';
 import 'package:flutter_quiz/QuizUI.dart';
-class ConsoleUI with QuizUI
-{
-  
+
+/// Handles the interactive console menus and results screens.
+class ConsoleUI with QuizUI {
+  /// Creates the console UI.
   ConsoleUI();
 
-  int promptMenu()
-  {
-      bool setPractice = QuizController.isPractice;
-      List<int> selections = [1,2,3,4];
+  /// Shows the main menu and returns the selected action number.
+  int promptMenu() {
+    bool setPractice = QuizController.isPractice;
+    List<int> selections = [1, 2, 3, 4];
 
-      while(true)
-      {
-        clearScreen();
-        customPrintln(s: 'Welcome to Flutter-Quiz',r: 254,g: 40,b: 255);
-        bluePrintln('Make a selection by typing a number.\n');
+    while (true) {
+      clearScreen();
+      customPrintln(s: 'Welcome to Flutter-Quiz', r: 254, g: 40, b: 255);
+      bluePrintln('Make a selection by typing a number.\n');
 
-        bluePrintln('1. Take a Quiz');
-        bluePrintln('2. Take a Random Quiz');
-        setPractice? bluePrintln('3. Disable Practice') : bluePrintln('3. Enable Practice');
-        bluePrintln('4. Quit');
+      bluePrintln('1. Take a Quiz');
+      bluePrintln('2. Take a Random Quiz');
+      setPractice
+          ? bluePrintln('3. Disable Practice')
+          : bluePrintln('3. Enable Practice');
+      bluePrintln('4. Quit');
 
-        setPractice ? greenPrintln('\nPRACTICE ENABLED') : stdout.writeln('\n'"");
+      setPractice
+          ? greenPrintln('\nPRACTICE ENABLED')
+          : stdout.writeln(
+              '\n'
+              "",
+            );
 
-        //String? input = stdin.readLineSync();
-        var input = userInput();
+      //String? input = stdin.readLineSync();
+      var input = userInput();
 
-        if(input == null)
-        {
-          continue; // loopback
-        }
-
-        int parsedInput = int.tryParse(input) ?? 0;
-
-        if(!selections.contains(parsedInput))
-        {
-          continue;
-        }
-
-        if(parsedInput == 3)
-        {
-          setPractice = !setPractice;
-          QuizController.isPractice = setPractice;
-        }
-
-        return parsedInput;
+      if (input == null) {
+        continue; // loopback
       }
+
+      int parsedInput = int.tryParse(input) ?? 0;
+
+      if (!selections.contains(parsedInput)) {
+        continue;
+      }
+
+      if (parsedInput == 3) {
+        setPractice = !setPractice;
+        QuizController.isPractice = setPractice;
+      }
+
+      return parsedInput;
+    }
   }
 
-  int promptSelectQuiz(List<Quiz> quizzes)
-  {
-    while(true)
-    {
+  /// Prompts the user to choose one of the available quizzes.
+  int promptSelectQuiz(List<Quiz> quizzes) {
+    while (true) {
       clearScreen();
       bluePrintln('Please Select a Quiz to Take\n');
 
-      for(Quiz q in quizzes)
-      {
+      for (Quiz q in quizzes) {
         bluePrintln('[*] ${q.name}');
       }
 
@@ -68,26 +70,23 @@ class ConsoleUI with QuizUI
 
       var input = userInput();
 
-      if(input == null)
-      {
+      if (input == null) {
         continue;
       }
 
       var parsedInput = int.tryParse(input);
-      var quizNumbers = quizzes.map((q)=> q.quizNum).toList();
+      var quizNumbers = quizzes.map((q) => q.quizNum).toList();
 
-      if(parsedInput!=null && quizNumbers.contains(parsedInput))
-      {
+      if (parsedInput != null && quizNumbers.contains(parsedInput)) {
         return parsedInput;
       }
     }
   }
 
-  int promptRandomQuiz(int availableQuestions)
-  {
-    var maxRange = (availableQuestions/3).round();
-    while(true)
-    {
+  /// Prompts for the number of random questions to include in a quiz.
+  int promptRandomQuiz(int availableQuestions) {
+    var maxRange = (availableQuestions / 3).round();
+    while (true) {
       clearScreen();
       bluePrintln('Please Select a Range of Questions to take.\n');
       bluePrintln('Avaiable Questions: $availableQuestions');
@@ -96,56 +95,59 @@ class ConsoleUI with QuizUI
 
       var input = userInput();
 
-      if(input == null)
-      {
+      if (input == null) {
         continue;
       }
 
       var parsedInt = int.tryParse(input);
 
-      if(parsedInt != null && parsedInt > 0 && parsedInt <= maxRange)
-      {
+      if (parsedInt != null && parsedInt > 0 && parsedInt <= maxRange) {
         return parsedInt;
       }
     }
   }
 
-  int displayResults(int finalScore, List<(bool,String,Question)> qR)
-  {
-    var selections = <int>[1,2];
+  /// Displays the completed quiz summary and returns the next action.
+  int displayResults(int finalScore, List<(bool, String, Question)> qR) {
+    var selections = <int>[1, 2];
     var total = qR.length;
-    
+
     var totalCorrect = qR.where((record) => record.$1 == true).length;
     var totalIncorrect = qR.where((record) => record.$1 == false).length;
 
-    while(true){
+    while (true) {
       clearScreen();
       bluePrintln('RESULTS\n');
       bluePrintln('Number of Questions: $total');
-      bluePrint('CORRECT: '); greenPrintln('$totalCorrect');
-      bluePrint('INCORRECT: '); redPrintln('$totalIncorrect');
-      finalScore >= 70 ? greenPrintln('FINAL SCORE: $finalScore\n') : redPrintln('FINAL SCORE: $finalScore\n');
+      bluePrint('CORRECT: ');
+      greenPrintln('$totalCorrect');
+      bluePrint('INCORRECT: ');
+      redPrintln('$totalIncorrect');
+      finalScore >= 70
+          ? greenPrintln('FINAL SCORE: $finalScore\n')
+          : redPrintln('FINAL SCORE: $finalScore\n');
 
       yellowPrintln('SUMMARY\n');
 
-      if(QuizController.isPractice)
-      {
-        for(int i = 0; i < qR.length; i++)
-        {
-          var isCorrect  = qR[i].$1;
-          yellowPrint('${i+1}. ');
-          isCorrect == true ? 
-            greenPrintln('[$CHECKMARK] USER ANSWER: ${qR[i].$2}, ANSWER: ${qR[i].$3.answer}') 
-          : redPrintln('[X] USER ANSWER: ${qR[i].$2}, ANSWER: ${qR[i].$3.answer}');
+      if (QuizController.isPractice) {
+        for (int i = 0; i < qR.length; i++) {
+          var isCorrect = qR[i].$1;
+          yellowPrint('${i + 1}. ');
+          isCorrect == true
+              ? greenPrintln(
+                  '[$CHECKMARK] USER ANSWER: ${qR[i].$2}, ANSWER: ${qR[i].$3.answer}',
+                )
+              : redPrintln(
+                  '[X] USER ANSWER: ${qR[i].$2}, ANSWER: ${qR[i].$3.answer}',
+                );
         }
-      }else{
-        for(int i = 0; i < qR.length; i++)
-        {
-          var isCorrect  = qR[i].$1;
-          yellowPrint('${i+1}. ');
-          isCorrect == true ? 
-            greenPrintln('[$CHECKMARK] USER ANSWER: ${qR[i].$2}') 
-          : redPrintln('[X] USER ANSWER: ${qR[i].$2}');
+      } else {
+        for (int i = 0; i < qR.length; i++) {
+          var isCorrect = qR[i].$1;
+          yellowPrint('${i + 1}. ');
+          isCorrect == true
+              ? greenPrintln('[$CHECKMARK] USER ANSWER: ${qR[i].$2}')
+              : redPrintln('[X] USER ANSWER: ${qR[i].$2}');
         }
       }
 
@@ -155,15 +157,13 @@ class ConsoleUI with QuizUI
 
       var input = userInput();
 
-      if(input == null)
-      {
+      if (input == null) {
         continue; // loopback
       }
 
       int parsedInput = int.tryParse(input) ?? 0;
 
-      if(!selections.contains(parsedInput))
-      {
+      if (!selections.contains(parsedInput)) {
         continue;
       }
 
@@ -171,12 +171,11 @@ class ConsoleUI with QuizUI
     }
   }
 
-  void quitDisplay()
-  {
+  /// Shows the quit screen before the program exits.
+  void quitDisplay() {
     clearScreen();
     bluePrint('Have a Nice Day ;^)');
     sleep(Duration(seconds: 3));
     clearScreen();
   }
-
 }
