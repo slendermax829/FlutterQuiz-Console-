@@ -33,6 +33,7 @@ class QuestionDisplayer with QuizUI
     clearScreen();
     stdout.write('[$questionNum] ');
     bluePrintln(_currQuestion.toString());
+    bluePrintln('Type /b to go back to prev question or /n to next question.');
   }
 
   void displayPracticeQuestion(int questionNum)
@@ -44,6 +45,7 @@ class QuestionDisplayer with QuizUI
     yellowPrintln('*** PRACTICE ***\n');
     stdout.write('[$questionNum] ');
     bluePrintln(_currQuestion.toString());
+    bluePrintln('\nType /b to go back to prev question or /n to next question.');
   }
 
   void _displayAnswer(String? userInput, bool isCorrect)

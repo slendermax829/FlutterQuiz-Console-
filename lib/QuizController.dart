@@ -110,16 +110,20 @@ class QuizController with QuizUI
 
     var isRunning = true;
     var score = 0;
-    var questionNum = 1;
+    //var questionNum = 1;
+    var questionIndex = 0;
     var numOfQuestions = qDisplay.questions.length;
 
     // List<(String,Question)> correctQuestions = [];
     // List<(String,Question)> incorrectQuestions = [];
 
     List<(bool,String,Question)> questionRecord = [];
+    List<bool> answered = List<bool>.filled(numOfQuestions, false, growable: false);
 
     while(isRunning)
     {
+      var questionNum = questionIndex + 1;
+
       isPractice == true ? qDisplay.displayPracticeQuestion(questionNum):
       qDisplay.displayQuestion(questionNum);
 
@@ -134,12 +138,38 @@ class QuizController with QuizUI
           input = _promptForFIB();
       }
 
+      if(input == BACK)
+      {
+        var prevIndex = _findUnansweredQuestion(answered, questionIndex, -1);
+
+        if(prevIndex != null)
+        {
+          questionIndex = prevIndex;
+          continue;
+        }
+
+        continue;
+
+      }else if(input == NEXT)
+      {
+        var nextIndex = _findUnansweredQuestion(answered, questionIndex, 1);
+
+        if(nextIndex != null)
+        {
+          questionIndex = nextIndex;
+          continue;
+        }
+
+        continue;
+      }
+
       if(input == null)
       {
         continue; // loopback
       }
 
       bool isCorrect = qDisplay.submitAnswer(input);
+      answered[questionIndex] = true;
 
       switch(isCorrect)
       {
@@ -151,12 +181,15 @@ class QuizController with QuizUI
           questionRecord.add((false,input,qDisplay.currQuestion));
       }
 
-      if(questionNum == numOfQuestions)
+      var nextUnansweredQuestion = _findUnansweredQuestion(answered, questionIndex, 1);
+
+      if(nextUnansweredQuestion == null && !answered.contains(false))
       {
         isRunning = false;
 
       }else{
-        questionNum++;
+        //questionIndex++;
+        questionIndex = nextUnansweredQuestion ?? answered.indexWhere((a)=> a == false);
       }
     }
     
@@ -191,6 +224,11 @@ class QuizController with QuizUI
       return null;
     }
 
+    if(input == '/b' || input == '/n')
+    {
+      return input;
+    }
+
     var checkInput = int.tryParse(input);
 
     if(checkInput != null && checkInput >= 1 && checkInput <= optionLength)
@@ -205,8 +243,34 @@ class QuizController with QuizUI
   {
     var input = stdin.readLineSync()?.trim().toLowerCase();
 
+    if(input == null || input == '')
+    {
+      return null;
+    }
+
+    if(input == '/b' || input == '/n')
+    {
+      return input;
+    }
+
     return input;
 
+  }
+
+  int? _findUnansweredQuestion(List<bool> answered, int currentIndex, int step)
+  {
+    var canidate = currentIndex + step;
+
+    while(canidate >= 0 && canidate < answered.length)
+    {
+      if(answered[canidate] == false)
+      {
+        return canidate;
+      }
+
+      canidate += step;
+    }
+    return null;
   }
 
   void _quit()
