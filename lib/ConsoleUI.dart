@@ -6,7 +6,8 @@ import 'package:flutter_quiz/QuizController.dart';
 import 'package:flutter_quiz/QuizUI.dart';
 
 /// Handles the interactive console menus and results screens.
-class ConsoleUI with QuizUI {
+class ConsoleUI with QuizUI 
+{
   /// Creates the console UI.
   ConsoleUI();
 
@@ -85,18 +86,24 @@ class ConsoleUI with QuizUI {
 
   /// Prompts for the number of random questions to include in a quiz.
   int promptRandomQuiz(int availableQuestions) {
+    var defaultRange = 10;
     var maxRange = (availableQuestions / 3).round();
     while (true) {
       clearScreen();
       bluePrintln('Please Select a Range of Questions to take.\n');
-      bluePrintln('Avaiable Questions: $availableQuestions');
+      bluePrintln('Available Questions: $availableQuestions');
       bluePrintln('Max Range: $maxRange\n');
-      yellowPrintln('\nDefault is 10\n');
+      yellowPrintln('\nDefault is $defaultRange\n');
 
       var input = userInput();
 
       if (input == null) {
         continue;
+      }
+
+      if(input == '') // equivalent to nothing
+      {
+        return defaultRange;
       }
 
       var parsedInt = int.tryParse(input);
@@ -108,7 +115,7 @@ class ConsoleUI with QuizUI {
   }
 
   /// Displays the completed quiz summary and returns the next action.
-  int displayResults(int finalScore, List<(bool, String, Question)> qR) {
+  int displayResults(int finalScore, List<(bool, String, String?)> qR) {
     var selections = <int>[1, 2];
     var total = qR.length;
 
@@ -135,10 +142,10 @@ class ConsoleUI with QuizUI {
           yellowPrint('${i + 1}. ');
           isCorrect == true
               ? greenPrintln(
-                  '[$CHECKMARK] USER ANSWER: ${qR[i].$2}, ANSWER: ${qR[i].$3.answer}',
+                  '[$CHECKMARK] USER ANSWER: ${qR[i].$2}, ANSWER: ${qR[i].$3}',
                 )
               : redPrintln(
-                  '[X] USER ANSWER: ${qR[i].$2}, ANSWER: ${qR[i].$3.answer}',
+                  '[X] USER ANSWER: ${qR[i].$2}, ANSWER: ${qR[i].$3}',
                 );
         }
       } else {

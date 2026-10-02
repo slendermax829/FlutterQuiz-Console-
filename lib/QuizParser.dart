@@ -6,7 +6,7 @@ import 'package:flutter_quiz/Quiz.dart';
 import 'package:flutter_quiz/Question.dart';
 
 const String _baseUrl = 'https://www.cs.utep.edu/cheon/cs4381/homework/quiz/';
-const int _totalQuizzes = 3;
+const int _totalQuizzes = 99; // quizzes to be searched
 
 /// Base endpoint used to retrieve quiz data.
 String get url => _baseUrl;
@@ -17,7 +17,8 @@ int get totalQuizzes => _totalQuizzes;
 //typedef QuizFetchProgress = void Function(String message);
 
 /// Verifies that the quiz API endpoint is reachable.
-Future<bool> validateURL() async {
+Future<bool> validateURL() async 
+{
   var url = Uri.parse(_baseUrl);
 
   var response = await Future.delayed(Duration(seconds: 3), () {
@@ -50,6 +51,7 @@ Future<List<Quiz>> fetchQuizzes() async {
   return lst.nonNulls.toList();
 }
 
+/// Checks to see if [quizNum] exists in the api by returning true or false.
 Future<bool> _validateQuiz(int quizNum) async {
   try {
     var url = Uri.parse(
@@ -73,6 +75,9 @@ Future<bool> _validateQuiz(int quizNum) async {
   }
 }
 
+/// Fetches quiz by [quizNum].
+/// 
+/// Returns [null] if quiz does exist but an api error had occurred
 Future<Quiz?> _fetchQuiz(int quizNum) async {
   var url = Uri.parse(
     '$_baseUrl?quiz=quiz${quizNum.toString().padLeft(2, '0')}',
@@ -104,8 +109,9 @@ Future<Quiz?> _fetchQuiz(int quizNum) async {
 }
 
 /// Exposes quiz fetching for tests using a specific quiz number.
+@Deprecated('Only for testing')
 Future<Quiz?> testFetch(int quizNumber) async => await _fetchQuiz(quizNumber);
 
 /// Exposes quiz validation for tests using a specific quiz number.
-Future<bool> testValidateQuiz(int quizNumber) async =>
-    await _validateQuiz(quizNumber);
+@Deprecated('Only for testing')
+Future<bool> testValidateQuiz(int quizNumber) async => await _validateQuiz(quizNumber);

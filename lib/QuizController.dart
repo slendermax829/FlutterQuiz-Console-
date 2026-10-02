@@ -10,7 +10,8 @@ import 'package:flutter_quiz/QuizUI.dart';
 /// The main Controller for the program.
 ///
 /// Handles quiz session as well as for displaying ui prompts.
-class QuizController with QuizUI {
+class QuizController with QuizUI 
+{
   /// Flag to signal if the quiz is a practice quiz or not.
   static bool isPractice = false;
 
@@ -28,9 +29,9 @@ class QuizController with QuizUI {
 
   /// initial setup for the program
   void start() async {
-    this.ui = ConsoleUI();
-    this.pool = QuizPool();
-    this.qDisplay = QuestionDisplayer();
+    ui = ConsoleUI();
+    pool = QuizPool();
+    qDisplay = QuestionDisplayer();
 
     await _validateConnection();
 
@@ -64,7 +65,7 @@ class QuizController with QuizUI {
     await pool.populatePool();
 
     greenPrintln('\nLOADED ${pool.numberOfQuizzes} QUIZZES');
-    greenPrintln('ACCQUIRED ${pool.numberOfQuestions} QUESTIONS');
+    greenPrintln('ACQUIRED ${pool.numberOfQuestions} QUESTIONS');
 
     await Future.delayed(Duration(seconds: 3));
   }
@@ -97,8 +98,7 @@ class QuizController with QuizUI {
     var input = ui.promptSelectQuiz(pool.quizzes);
     var quiz = pool.quizzes.firstWhere((q) => q.quizNum == input);
 
-    qDisplay.questions = List.from(quiz.questions)
-      ..shuffle(); // random order of questions
+    qDisplay.questions = quiz.randQuestions; // random order of questions
     _quizLoop();
     //greenPrintln('Selected ${quiz.name}');
   }
@@ -132,7 +132,7 @@ class QuizController with QuizUI {
     // List<(String,Question)> correctQuestions = [];
     // List<(String,Question)> incorrectQuestions = [];
 
-    List<(bool, String, Question)> questionRecord = []; // list of records to be displayed for results (isCorrect,userInput,currQuestion)
+    List<(bool, String, String?)> questionRecord = []; // list of records to be displayed for results (isCorrect,userInput,currQuestion.answer)
     List<bool> answered = List<bool>.filled(
       numOfQuestions,
       false,
@@ -187,24 +187,19 @@ class QuizController with QuizUI {
       switch (isCorrect) {
         case true:
           score++;
-          questionRecord.add((true, input, qDisplay.currQuestion));
+          questionRecord.add((true, input, qDisplay.currentAnswer));
 
         case false:
-          questionRecord.add((false, input, qDisplay.currQuestion));
+          questionRecord.add((false, input, qDisplay.currentAnswer));
       }
 
-      var nextUnansweredQuestion = _findUnansweredQuestion(
-        answered,
-        questionIndex,
-        1,
-      );
+      var nextUnansweredQuestion = _findUnansweredQuestion(answered, questionIndex, 1); // go to next unanswered question
 
       if (nextUnansweredQuestion == null && !answered.contains(false)) {
         isRunning = false; // All questions were answered heading to results
       } else {
         //questionIndex++;
-        questionIndex =
-            nextUnansweredQuestion ?? answered.indexWhere((a) => a == false);
+        questionIndex = nextUnansweredQuestion ?? answered.indexWhere((a) => a == false); // go to next unanswered question or first question where the user has not submitted an answer
       }
     }
 
@@ -214,7 +209,7 @@ class QuizController with QuizUI {
   /// Calculate final score while displaying the results from test session.
   ///
   /// Asks user if want to continue or not.
-  void _results(int score, List<(bool, String, Question)> qR) {
+  void _results(int score, List<(bool, String, String?)> qR) {
     var finalScore = ((score / qDisplay.questions.length) * 100).round();
     var input = ui.displayResults(finalScore, qR);
 
@@ -272,19 +267,16 @@ class QuizController with QuizUI {
   /// Finds the next/prev unanswered question.
   ///
   /// [step] is either -1 for prev question or 1 for next question.
-  int? _findUnansweredQuestion(
-    List<bool> answered,
-    int currentIndex,
-    int step,
-  ) {
-    var canidate = currentIndex + step;
+  int? _findUnansweredQuestion(List<bool> answered, int currentIndex, int step) 
+  {
+    var candidate = currentIndex + step;
 
-    while (canidate >= 0 && canidate < answered.length) {
-      if (answered[canidate] == false) {
-        return canidate;
+    while (candidate >= 0 && candidate < answered.length) {
+      if (answered[candidate] == false) {
+        return candidate;
       }
 
-      canidate += step;
+      candidate += step;
     }
     return null;
   }

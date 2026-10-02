@@ -3,7 +3,8 @@ import 'package:flutter_quiz/Question.dart';
 import 'dart:math' as math;
 
 /// Represents a named quiz and its questions.
-class Quiz {
+class Quiz 
+{
   final String _quizName;
   final List<Question> _questions;
 
@@ -35,14 +36,5 @@ class Quiz {
     }
 
     return _questions[questionNum - 1];
-  }
-
-  /// Returns a random question paired with this quiz number.
-  Record getRandomQuestion() {
-    var rand = math.Random();
-
-    var chosenQuestion = _questions[rand.nextInt(numOfQuestions) - 1];
-
-    return (quizNum, chosenQuestion);
   }
 }

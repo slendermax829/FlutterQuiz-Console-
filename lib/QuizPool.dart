@@ -6,8 +6,9 @@ import 'package:flutter_quiz/QuizParser.dart' as QuizParser;
 
 import 'dart:math' as math;
 
-/// Stores quizzes loaded from the http source.
-class QuizPool {
+/// Stores quizzes loaded from the api source.
+class QuizPool 
+{
   List<Quiz> _quizzes = [];
 
   /// Loaded quizzes.

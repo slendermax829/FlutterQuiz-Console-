@@ -5,11 +5,10 @@ import 'package:flutter_quiz/QuizController.dart';
 import 'package:flutter_quiz/QuizUI.dart';
 
 /// A Question Display class that can display the question toward the user
-class QuestionDisplayer with QuizUI {
+class QuestionDisplayer with QuizUI 
+{
   late List<Question> _questions;
   late Question _currQuestion;
-
-  bool _practiceTest = false;
 
   /// Questions queued for the current quiz session.
   List<Question> get questions => _questions;

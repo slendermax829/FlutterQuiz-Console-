@@ -8,7 +8,7 @@ A simple command-line quiz application built with Dart.
 - Score tracking
 - Practice mode
 
-## 'pubspec' Dependencies
+## Pubspec Dependencies
 This project uses the following dependencies specified in the `pubspec.yaml` file:
 
 - `http: ^1.6.0`

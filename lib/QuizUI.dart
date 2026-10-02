@@ -4,7 +4,8 @@ import 'package:ansicolor/ansicolor.dart';
 import 'package:dart_console/dart_console.dart';
 
 /// Mixin class for input, screen control, and colored output.
-mixin QuizUI {
+mixin QuizUI 
+{
   /// Checkmark symbol used in results displays.
   final String CHECKMARK = '\u2713';
 

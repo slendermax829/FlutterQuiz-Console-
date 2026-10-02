@@ -1,5 +1,6 @@
-/// Identifies the supported question formats in a quiz.
-enum QuestionType {
+/// Identifies the supported question format in a quiz.
+enum QuestionType 
+{
   MC('Multiple Choice', 1), // Multiple Choice
   FIB('Fill in the Blank', 2); // Fill in Blank
 
@@ -15,13 +16,18 @@ enum QuestionType {
   /// Creates a question type entry.
   const QuestionType(this._name, this._number);
 
+  /// Method Override version of `toString()` for this class and subclasses in particular.
+  /// 
+  /// Returns a string of question that is to be displayed.
+  @override
   String toString() {
     return '$_name, $_number';
   }
 }
 
 /// Base model for a quiz question. Cannot be instantiated by itself
-abstract class Question {
+abstract class Question 
+{
   final String _prompt;
   final QuestionType _type;
 
@@ -39,9 +45,6 @@ abstract class Question {
   /// 
   /// Primarily for multiple choice questions
   List<String> get options => _options ?? [];
-
-  /// A compact record containing the type label and numeric code.
-  Record get typeRecord => (type.name, type.number);
 
   /// Canonical answer value for this question.
   String get answer; // abstract
@@ -84,6 +87,8 @@ abstract class Question {
   }
 
   /// Returns `true` when the provided user input matches the answer.
+  /// 
+  /// Otherwise `false`.
   bool checkUserInput(String? userInput);
 }
 
@@ -117,7 +122,7 @@ $_prompt\n
   }
 }
 
-/// 
+/// A Multiple Choice Question
 /// 
 /// A question that is answered by selecting one option.
 class MultipleChoice extends Question {
